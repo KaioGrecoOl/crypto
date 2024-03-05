@@ -1,10 +1,20 @@
 from tkinter import *
 import requests
 import json
+import sqlite3
 
 pycrypto = Tk()
 pycrypto.title("My Crypto Portfolio")
 pycrypto.iconbitmap("favicon.ico")
+
+con = sqlite3.connect('crypto.db')
+cursorObj = con.cursor()
+cursorObj.execute("CREATE TABLE IF NOT EXISTS crypto(id INTEGER PRIMARY KEY, symbol TEXT, amount INTEGER, price REAL)")
+con.commit()
+
+cursorObj.execute("INSERT INTO crypto VALUES(1, 'BTC', 2, 3200)")
+con.commit()
+
 
 def font_color(amout):
     if amout >= 0:
@@ -119,4 +129,8 @@ totalpl.grid(row=0, column=6, sticky=N+S+E+W)
 
 my_portfolio()
 pycrypto.mainloop()
+
+cursorObj.close()
+con.close()
+
 print("Program Completed")
