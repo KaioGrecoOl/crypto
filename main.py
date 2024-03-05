@@ -7,12 +7,24 @@ pycrypto = Tk()
 pycrypto.title("My Crypto Portfolio")
 pycrypto.iconbitmap("favicon.ico")
 
-con = sqlite3.connect('crypto.db')
+con = sqlite3.connect('coin.db')
 cursorObj = con.cursor()
-cursorObj.execute("CREATE TABLE IF NOT EXISTS crypto(id INTEGER PRIMARY KEY, symbol TEXT, amount INTEGER, price REAL)")
+cursorObj.execute("CREATE TABLE IF NOT EXISTS coin(id INTEGER PRIMARY KEY, symbol TEXT, amount INTEGER, price REAL)")
 con.commit()
 
-cursorObj.execute("INSERT INTO crypto VALUES(1, 'BTC', 2, 3200)")
+cursorObj.execute("INSERT INTO coin VALUES(1, 'BTC', 2, 3200)")
+con.commit()
+
+cursorObj.execute("INSERT INTO coin VALUES(2, 'SOL', 100, 2.05)")
+con.commit()
+
+cursorObj.execute("INSERT INTO coin VALUES(3, 'ETH', 5, 1000)")
+con.commit()
+
+cursorObj.execute("INSERT INTO coin VALUES(4, 'XMP', 10, 400.05)")
+con.commit()
+
+cursorObj.execute("INSERT INTO coin VALUES(5, 'USDT', 75, 1)")
 con.commit()
 
 
