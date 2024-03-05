@@ -12,22 +12,6 @@ cursorObj = con.cursor()
 cursorObj.execute("CREATE TABLE IF NOT EXISTS coin(id INTEGER PRIMARY KEY, symbol TEXT, amount INTEGER, price REAL)")
 con.commit()
 
-cursorObj.execute("INSERT INTO coin VALUES(1, 'BTC', 2, 3200)")
-con.commit()
-
-cursorObj.execute("INSERT INTO coin VALUES(2, 'SOL', 100, 2.05)")
-con.commit()
-
-cursorObj.execute("INSERT INTO coin VALUES(3, 'ETH', 5, 1000)")
-con.commit()
-
-cursorObj.execute("INSERT INTO coin VALUES(4, 'XMP', 10, 400.05)")
-con.commit()
-
-cursorObj.execute("INSERT INTO coin VALUES(5, 'USDT', 75, 1)")
-con.commit()
-
-
 def font_color(amout):
     if amout >= 0:
       return "green"
@@ -39,33 +23,9 @@ def my_portfolio():
     api_request = requests.get("https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?start=1&limit=300&convert=USD&CMC_PRO_API_KEY=e856bbd3-c1b5-4e52-859f-a12c095b722b")
     api = json.loads(api_request.content)
 
-    coins = [
-      {
-        "symbol": "BTC",
-        "amount_owned": 2,
-        "price_per_coin": 3200
-      },
-      {
-        "symbol": "SOL",
-        "amount_owned": 100,
-        "price_per_coin": 2.05
-      },
-      {
-        "symbol": "ETH",
-        "amount_owned": 5,
-        "price_per_coin": 1000
-      },
-      {
-        "symbol": "XMP",
-        "amount_owned": 10,
-        "price_per_coin": 400.05
-      },
-      {
-        "symbol": "USDT",
-        "amount_owned": 75,
-        "price_per_coin": 1
-      }
-    ]
+    cursorObj.execute("SELECT * FROM coin")
+    coins = cursorObj.fetchall()
+
 
     total_pl = 0
     coin_row = 1
@@ -73,11 +33,11 @@ def my_portfolio():
 
     for i in range(0, 300):
       for coin in coins:
-        if api["data"][i]["symbol"] == coin["symbol"]:
-          total_paid = coin["amount_owned"] * coin["price_per_coin"]
-          current_value = coin["amount_owned"] * api["data"][i]["quote"]["USD"]["price"]
-          pl_percoin = api["data"][i]["quote"]["USD"]["price"] - coin["price_per_coin"]
-          total_plpercoin = pl_percoin * coin["amount_owned"]
+        if api["data"][i]["symbol"] == coin[1]:
+          total_paid = coin[2] * coin[3]
+          current_value = coin[2] * api["data"][i]["quote"]["USD"]["price"]
+          pl_percoin = api["data"][i]["quote"]["USD"]["price"] - coin[3]
+          total_plpercoin = pl_percoin * coin[2]
 
           total_pl = total_pl + total_plpercoin
           total_current_value = total_current_value + current_value
@@ -88,7 +48,7 @@ def my_portfolio():
           price = Label(pycrypto, text="${0:.2f}".format(api["data"][i]["quote"]["USD"]["price"]), bg="#F3F4F6", fg="black", font="Lato 12", padx="2", pady="2", borderwidth=2, relief="groove")
           price.grid(row=coin_row, column=1, sticky=N+S+E+W)
 
-          no_coins = Label(pycrypto, text=coin["amount_owned"], bg="#F3F4F6", fg="black", font="Lato 12", borderwidth=2, padx="2", pady="2", relief="groove")
+          no_coins = Label(pycrypto, text=coin[2], bg="#F3F4F6", fg="black", font="Lato 12", borderwidth=2, padx="2", pady="2", relief="groove")
           no_coins.grid(row=coin_row, column=2, sticky=N+S+E+W)
 
           amount_paid = Label(pycrypto, text="${0:.2f}".format(total_paid), bg="#F3F4F6", fg="black",  font="Lato 12", borderwidth=2, padx="2", pady="2", relief="groove")
