@@ -30,6 +30,14 @@ def my_portfolio():
         cursorObj.execute("INSERT INTO coin(symbol, price, amount) VALUES(?, ?, ?)", (symbol_txt.get(), price_txt.get(), amount_txt.get()))
         con.commit()
 
+    def update_coin():
+        cursorObj.execute("UPDATE coin SET symbol=?, price=?, amount=? WHERE id=?", (symbol_update.get(), price_update.get(), amount_update.get(), portid_update.get()))
+        con.commit()
+
+    def delete_coin():
+        cursorObj.execute("DELETE FROM coin WHERE id=?", (portid_delete.get(),))
+        con.commit()
+
 
     total_pl = 0
     coin_row = 1
@@ -86,6 +94,30 @@ def my_portfolio():
 
     add_coin = Button(pycrypto, text="Add Coin", bg="#142E54", fg="white", command=insert_coin ,font="Lato 12", borderwidth=2, relief="groove", padx="2", pady="2")
     add_coin.grid(row=coin_row + 1, column=4, sticky=N+S+E+W)
+
+    #UPDATE COIN
+    portid_update = Entry(pycrypto, borderwidth=2, relief="groove")
+    portid_update.grid(row=coin_row+2, column=0)
+
+    symbol_update = Entry(pycrypto, borderwidth=2, relief="groove")
+    symbol_update.grid(row=coin_row+2, column=1)
+
+    price_update = Entry(pycrypto, borderwidth=2, relief="groove")
+    price_update.grid(row=coin_row+2, column=2)
+
+    amount_update = Entry(pycrypto, borderwidth=2, relief="groove")
+    amount_update.grid(row=coin_row+2, column=3)
+
+    update_coin_txt = Button(pycrypto, text="Update Coin", bg="#142E54", fg="white", command=update_coin ,font="Lato 12", borderwidth=2, relief="groove", padx="2", pady="2")
+    update_coin_txt.grid(row=coin_row + 2, column=4, sticky=N+S+E+W)
+
+    # #DELETE COIN
+    portid_delete = Entry(pycrypto, borderwidth=2, relief="groove")
+    portid_delete.grid(row=coin_row+3, column=0)
+
+    delete_coin_txt = Button(pycrypto, text="Delete Coin", bg="#142E54", fg="white", command=delete_coin ,font="Lato 12", borderwidth=2, relief="groove", padx="2", pady="2")
+    delete_coin_txt.grid(row=coin_row+3, column=4, sticky=N+S+E+W)
+
 
     totalap = Label(pycrypto, text="${0:.2f}".format(total_amount_paid), bg="#F3F4F6", fg="black", font="Lato 12", borderwidth=2, padx="2", pady="2", relief="groove")
     totalap.grid(row=coin_row, column=4, sticky=N+S+E+W)
