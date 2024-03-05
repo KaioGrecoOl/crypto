@@ -25,6 +25,10 @@ def my_portfolio():
         return "green"
       else:
         return "red"
+      
+    def insert_coin():
+        cursorObj.execute("INSERT INTO coin(symbol, price, amount) VALUES(?, ?, ?)", (symbol_txt.get(), price_txt.get(), amount_txt.get()))
+        con.commit()
 
 
     total_pl = 0
@@ -69,6 +73,19 @@ def my_portfolio():
           totalpl.grid(row=coin_row, column=7, sticky=N+S+E+W)
 
           coin_row += 1
+
+    #INSERT COIN
+    symbol_txt = Entry(pycrypto, borderwidth=2, relief="groove")
+    symbol_txt.grid(row=coin_row+1, column=1)
+
+    price_txt = Entry(pycrypto, borderwidth=2, relief="groove")
+    price_txt.grid(row=coin_row+1, column=2)
+
+    amount_txt = Entry(pycrypto, borderwidth=2, relief="groove")
+    amount_txt.grid(row=coin_row+1, column=3)
+
+    add_coin = Button(pycrypto, text="Add Coin", bg="#142E54", fg="white", command=insert_coin ,font="Lato 12", borderwidth=2, relief="groove", padx="2", pady="2")
+    add_coin.grid(row=coin_row + 1, column=4, sticky=N+S+E+W)
 
     totalap = Label(pycrypto, text="${0:.2f}".format(total_amount_paid), bg="#F3F4F6", fg="black", font="Lato 12", borderwidth=2, padx="2", pady="2", relief="groove")
     totalap.grid(row=coin_row, column=4, sticky=N+S+E+W)
