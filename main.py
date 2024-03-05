@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import messagebox, Menu
 import requests
 import json
 import sqlite3
@@ -12,6 +13,31 @@ cursorObj = con.cursor()
 cursorObj.execute("CREATE TABLE IF NOT EXISTS coin(id INTEGER PRIMARY KEY, symbol TEXT, amount INTEGER, price REAL)")
 con.commit()
 
+def reset():
+    for window in pycrypto.winfo_children():
+        window.destroy()
+
+    app_nav()
+    app_header()
+    my_portfolio()
+
+def app_nav():
+    def clear_all():
+        cursorObj.execute("DELETE FROM coin")
+        con.commit()
+
+        messagebox.showinfo("Portfolio Notification", "Portfolio Cleared - Add New Coins")
+        reset()
+
+    def close_app():
+        pycrypto.destroy()
+
+    menu = Menu(pycrypto)
+    file_item = Menu(menu)
+    file_item.add_command(label='Clear Portfolio', command=clear_all)
+    file_item.add_command(label='Close App', command=close_app)
+    menu.add_cascade(label="File", menu=file_item)
+    pycrypto.config(menu=menu)
 
 def my_portfolio():
     api_request = requests.get("https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?start=1&limit=300&convert=USD&CMC_PRO_API_KEY=e856bbd3-c1b5-4e52-859f-a12c095b722b")
@@ -30,13 +56,22 @@ def my_portfolio():
         cursorObj.execute("INSERT INTO coin(symbol, price, amount) VALUES(?, ?, ?)", (symbol_txt.get(), price_txt.get(), amount_txt.get()))
         con.commit()
 
+        messagebox.showinfo("Portfolio Notification", "Coin Added to Portfolio Successfully!")
+        reset()
+
     def update_coin():
         cursorObj.execute("UPDATE coin SET symbol=?, price=?, amount=? WHERE id=?", (symbol_update.get(), price_update.get(), amount_update.get(), portid_update.get()))
         con.commit()
 
+        messagebox.showinfo("Portfolio Notification", "Coin Updated Successfully!")
+        reset()
+
     def delete_coin():
         cursorObj.execute("DELETE FROM coin WHERE id=?", (portid_delete.get(),))
         con.commit()
+
+        messagebox.showinfo("Portfolio Notification", "Coin Deleted Successfully!")
+        reset()
 
 
     total_pl = 0
@@ -130,7 +165,7 @@ def my_portfolio():
 
     api = ""
 
-    refresh = Button(pycrypto, text="Refresh", bg="#142E54", fg="white", command=my_portfolio, font="Lato 12", borderwidth=2, padx="2", pady="2", relief="groove")
+    refresh = Button(pycrypto, text="Refresh", bg="#142E54", fg="white", command=reset, font="Lato 12", borderwidth=2, padx="2", pady="2", relief="groove")
     refresh.grid(row=coin_row + 1, column=7, sticky=N+S+E+W)
 
 
@@ -160,6 +195,7 @@ def app_header():
     totalpl.grid(row=0, column=7, sticky=N+S+E+W)
 
 
+app_nav()
 app_header()
 my_portfolio()
 pycrypto.mainloop()
